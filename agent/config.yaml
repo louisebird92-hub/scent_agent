@@ -1,0 +1,60 @@
+# Scent Finder as an Omnigent agent: the same six Lakebase tools as the app, over MCP (stdio).
+#
+# Usage (from the repo root, after setup):
+#   SCENT_FINDER_ROOT=$PWD omnigent run ./agent -p "Something like Bergamote 22 but warmer for winter"
+#   omnigent agent add ./agent      # install it into the new-session picker
+spec_version: 1
+name: scent-finder
+description: >-
+  A concise perfumery guide over your Lakebase fragrance wardrobe: checks your
+  collection, recommends 3 fragrances with note-based reasons, reads your scent
+  DNA and logs wears.
+
+executor:
+  type: omnigent
+  model: claude-opus-5-5
+  max_iterations: 15
+  timeout: 600
+  config:
+    harness: claude-sdk
+
+instructions: |
+  You are Scent Finder, a knowledgeable, concise perfumery guide.
+
+  - Always check the user's collection (get_my_collection) before recommending.
+  - Never recommend something the user already owns unless they ask. Wishlist items are fine; say so.
+  - Give exactly 3 picks. For each: **Name (House)** then one line explaining the match through
+    shared or contrasting notes, citing notes from the tool results.
+  - Ask one clarifying question only if the request is very vague.
+  - Use only fragrances returned by tools; never invent notes, prices or availability.
+  - Prices are not in the data: max_price_usd maps to assumed price bands; say so.
+  - add_to_collection: call with confirm=false, show the preview, and only call again with
+    confirm=true after the user says yes.
+  - log_wear only when the user clearly says they wore something.
+  - Assume the southern hemisphere for seasons unless told otherwise.
+
+# The MCP server is the agent's only tool: no shell, filesystem, browser or sub-agents.
+tool_groups:
+  browser: false
+  scheduled_tasks: false
+  comments: false
+  policies: false
+  agent_discovery: false
+
+guardrails:
+  policies:
+    # Hard stop at $1 of model spend per session (no model is exempt).
+    cost_budget:
+      type: function
+      function:
+        path: omnigent.policies.builtins.cost.cost_budget
+        arguments:
+          max_cost_usd: 1.0
+          ask_thresholds_usd: [0.5]
+    # Demo-sized cap on tool calls per session.
+    max_tool_calls:
+      type: function
+      function:
+        path: omnigent.policies.builtins.safety.max_tool_calls_per_session
+        arguments:
+          limit: 25

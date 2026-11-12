@@ -1,0 +1,51 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# version file
+src/scent_finder/_version.py
+
+# metadata file
+src/scent_finder/_metadata.py
+
+# build files
+dist
+
+# js-related
+node_modules/
+.tanstack
+
+# env files
+.env
+.env.local
+.env.*
+
+# mac
+.DS_Store
+
+# DABs 
+.databricks
+
+# apx
+.apx/
+
+# UI dist folder
+src/scent_finder/__dist__/
+
+# Workshop / local tooling (not part of the project)
+.workshop/
+.agents/
+.claude/
+.databricks/
+AGENTS.md
+CLAUDE.md
+
+# Downloaded by scripts/seed.py (pinned Hugging Face revision)
+data/raw/

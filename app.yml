@@ -1,0 +1,10 @@
+command: ["uvicorn", "scent_finder.backend.app:app", "--workers", "2"]
+env:
+  - name: LAKEBASE_ENDPOINT
+    valueFrom: postgres
+  - name: LAKEBASE_DATABASE
+    value: databricks_postgres
+  - name: CHAT_MODEL
+    value: system.ai.claude-opus-5-5
+  - name: EMBED_MODEL
+    value: system.ai.gte-large-en

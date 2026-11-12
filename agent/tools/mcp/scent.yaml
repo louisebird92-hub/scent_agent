@@ -1,0 +1,18 @@
+# Scent Finder MCP server (stdio). Read-only except log_wear and add_to_collection (preview, then confirm).
+name: scent
+description: Fragrance search, similarity, collection, scent DNA and wear log over Lakebase.
+transport: stdio
+command: ${SCENT_FINDER_ROOT}/.venv/bin/python
+args: ["-m", "scent_finder.fragrance.mcp_server"]
+env:
+  PYTHONPATH: ${SCENT_FINDER_ROOT}/src
+  LAKEBASE_ENDPOINT: projects/scent-finder/branches/production/endpoints/primary
+  SCENT_FINDER_USER: ${SCENT_FINDER_USER}
+tools:
+  - search_by_notes
+  - find_similar
+  - get_my_collection
+  - get_scent_dna
+  - log_wear
+  - add_to_collection
+timeout: 60
